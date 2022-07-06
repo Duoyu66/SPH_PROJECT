@@ -1,4 +1,16 @@
-const { defineConfig } = require('@vue/cli-service')
-module.exports = defineConfig({
-  transpileDependencies: true
+// const { defineConfig } = require('@vue/cli-service')
+module.exports = ({
+  // transpileDependencies: true,
+  lintOnSave:false,
+  devServer:{
+    port:8081,
+    proxy:{
+      '/api':{
+         target:'http://gmall-h5-api.atguigu.cn',
+        changeOrigin:true
+        // pathRewrite:{'^api':''}
+      //       既然postman可以接收数据，为什么还报code500啊
+      }
+    }
+  }
 })
