@@ -3,8 +3,11 @@
     <div class="type-wrap logo">
       <div class="fl key brand">品牌</div>
       <div class="value logos">
+        <!--        品牌地方-->
         <ul class="logo-list">
-          <li v-for="(trademark,index) in trademarkList" :key="trademark.tmId">{{ trademark.tmName }}</li>
+          <li v-for="(trademark,index) in trademarkList" :key="trademark.tmId" @click="tradeMatkHandler">
+            {{ trademark.tmName }}
+          </li>
         </ul>
       </div>
       <div class="ext">
@@ -12,11 +15,14 @@
         <a href="javascript:void(0);">更多</a>
       </div>
     </div>
+<!--    平台售卖属性的地方-->
     <div class="type-wrap" v-for="(attr,index) in attrsList" :key="attr.attrId">
+<!--      平台售卖属性：比如颜色-->
       <div class="fl key">{{ attr.attrName }}</div>
       <div class="fl value">
         <ul class="type-list">
-          <li v-for="(attrValue,index) in attr.attrValueList" :key="index">{{ attrValue }}</li>
+<!--          平台相应售卖的属性值：粉色、蓝色、黑色、-->
+          <li v-for="(attrValue,index) in attr.attrValueList" :key="attrValue" @click="attrInfo(attr,attrValue)">{{ attrValue }}</li>
         </ul>
       </div>
       <div class="fl ext"></div>
@@ -32,6 +38,17 @@ export default {
   name: 'SearchSelector',
   computed: {
     ...mapGetters(['trademarkList', 'attrsList'])
+  },
+  methods: {
+    tradeMatkHandler(trademark) {
+      this.$emit('trademarkInfo', trademark)
+    },
+    //平台售卖属性值的点击事件
+    attrInfo(attr,attrValue){
+      // console.log(attr,attrValue)
+      this.$emit("attrInfo",attr,attrValue)
+    }
+
   }
 }
 </script>

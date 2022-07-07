@@ -4,47 +4,42 @@
     <TypeIndex/>
     <div class="main">
       <div class="py-container">
-        <!--bread-->
+        <!--bread 带x结构的-->
         <div class="bread">
           <ul class="fl sui-breadcrumb">
             <li>
               <a href="#">全部结果</a>
             </li>
           </ul>
+          <!--               分类的面包屑 ;-->
           <ul class="fl sui-tag">
-            <li class="with-x" v-if="searchParams.categoryName">{{ searchParams.categoryName }}
-              <i @clcik="removeCategoryName">×</i>
-            </li>
-
+            <li class="with-x" v-if="searchParams.categoryName">{{ searchParams.categoryName }}<i @click="removeCategoryName">×</i></li>
+            <!--            &lt;!&ndash; 关键字的面包屑 &ndash;&gt;-->
+            <li class="with-x" v-if="searchParams.keyword">{{ searchParams.keyword }}<i @click="removeKeyword">×</i></li>
+<!--            品牌的面包屑-->
+            <li class="with-x" v-if="searchParams.trademark">{{ searchParams.trademark.split(":")[1]}}<i @click="removeTradeMark">×</i></li>
+<!--            平台的售卖的属性的展示-->
+            <li class="with-x" v-for="(attrValue,index) in searchParams.props" :key="index">{{attrValue.split(":")[1]}}<i @click="removeAttr">×</i></li>
+            <li class="with-x" v-for="(attrValue,index) in searchParams.props" :key="index">{{attrValue.split(":")[1]}}<i @click="removeAttr">×</i></li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector/>
+        <SearchSelector @tradeamarkInfo="trademarkInfo" @attrInfo="attrInfo"/>
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active:isOne}" >
+                  <a href="#">综合<span v-show="isDesc" :class="{'el-icon-top':isDesc,'el-icon-bottom':isAcs}" @click="changeOrder"> </span></a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
+                <li :class="isTwo">
+                  <a href="#">价格<span v-show="isAcs" class="el-icon-bottom"> </span></a>
                 </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
-                </li>
+                <li> <i class="el-icon-upload"></i></li>
+
               </ul>
             </div>
           </div>
@@ -126,9 +121,9 @@ export default {
         category3Id: "",
         categoryName: "",
         keyword: "",
-        order: "",
+        order: "1:desc",
         pageNo: 1,
-        pageSize: 3,
+        pageSize: 300,
         props: [],
         trademark: ""
       }
@@ -148,18 +143,82 @@ export default {
     this.getData();
   },
   computed: {
-    ...mapGetters(['goodsList'])
+    ...mapGetters(['goodsList']),
+    isOne(){
+      return this.searchParams.order.indexOf('1')!==-1
+
+    },
+    isTwo(){
+      return this.searchParams.order.indexOf('2')!==-1
+    },
+    isAcs(){
+      return this.searchParams.order.indexOf('asc')!==-1
+    },
+    isDesc(){
+      return this.searchParams.order.indexOf('desc')!==-1
+
+    }
+
   },
   methods: {
     getData() {
       this.$store.dispatch('getSearchList', this.searchParams)
     },
     removeCategoryName() {
-      this.searchParams.categoryName = '',
-          this.searchParams.category1Id = '',
-          this.searchParams.category2Id = '',
-          this.searchParams.category3Id = '',
+      this.searchParams.categoryName = undefined,
+          this.searchParams.category1Id = undefined,
+          this.searchParams.category2Id = undefined,
+          this.searchParams.category3Id = undefined,
           this.getData()
+    },
+    removeKeyword() {
+      //给服务器带的参数searchParams的keyword为空
+      this.searchParams.keyword = undefined
+      //再次发请求
+      this.getData()
+      //通知兄弟组件Header清除关键字
+      this.$bus.$emit("clear")
+      //进行路由的跳转
+      if (this.$route.query) {
+        this.$router.push({name: "search", query: this.$route.query})
+      }
+    },
+    trademarkInfo(trademark) {
+      //整理品牌字段参数
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`
+      // console.log("我是父组件", trademark)
+      this.getData()
+    },
+    //删除品牌信息
+    removeTradeMark(){
+      this.searchParams.trademark=undefined
+      this.getData()
+    },
+  //  收集平台属性大方回调函数（自定义事件）
+    attrInfo(attr,attrValue){
+      let props=`${attr.attrId}:${attrValue}:${attr.attrName}`
+      //数组去重
+      if(this.searchParams.props.indexOf(props)===-1){
+        this.searchParams.props.push(props)
+
+      }
+      this.getData()
+      // console.log(props)
+      // console.log(attr,attrValue)
+    },
+    //删除售卖属性
+    removeAttr(index) {
+      this.searchParams.props.splice(index,1)
+      console.log(index)
+      console.log("你好啊",index)
+    //  再次发请求
+      this.getData()
+    },
+    //排序的操作
+    changeOrder(){
+      let bool=this.isAcs
+      this.isDesc=!bool
+      alert(1233)
     }
   },
   //数据监听：监听组件实例身上的属性值变化
@@ -167,13 +226,14 @@ export default {
 
     $route(newValue, oldValue) {
       Object.assign(this.searchParams, this.$route.query, this.$route.params)
+//再次发起AJACX请求
+      this.getData();
       this.searchParams.category1Id = undefined;
       this.searchParams.category2Id = undefined;
       this.searchParams.category3Id = undefined;
-      this.$route.params.keyword = undefined;
 
-      this.getData();
-    this.$router.push({name:"search",params:this.$route.params})
+
+      // this.$router.push({name: "search", params: this.$route.params})
 
     }
   }

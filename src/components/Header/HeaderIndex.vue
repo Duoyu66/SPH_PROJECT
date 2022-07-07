@@ -77,6 +77,11 @@ export default {
       // this.$router.push({name:"search",params:{keyword:this.keyword},query:{k:this.keyword.toUpperCase()}})
     // }
   },
+  mounted() {
+    this.$bus.$on("clear",()=>{
+      this.keyword=''
+    })
+  }
 }
 </script>
 
