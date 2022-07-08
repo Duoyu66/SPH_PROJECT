@@ -12,7 +12,9 @@
 import Header from "@/components/Header/HeaderIndex";
 import Footer from "@/components/Footer/FooterIndex";
 
-import {reqCategoryList} from "@/api";
+import {reqGoodsInfo} from "@/api";
+
+console.log(reqGoodsInfo())
 
 export default {
   name: 'App',

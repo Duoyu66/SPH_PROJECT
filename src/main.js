@@ -6,6 +6,8 @@ import router from "@/router";
 import {reqGetSearchInfo} from "@/api";
 
 console.log(reqGetSearchInfo({}))
+//引入分页器组件
+import Pagination from './components/Pagination/Pagination'
 
 //引入Swiper样式
 import 'swiper/css/swiper.css'
@@ -18,7 +20,7 @@ import NavIndex from "@/components/TypeNav/NavIndex";
 import store from '@/store'
 //第一个 参数：全局组件的名字，第二个参数：哪一个组件
 Vue.component(NavIndex.name, NavIndex)
-
+Vue.component(Pagination.name,Pagination)
 
 new Vue({
     render: h => h(App),

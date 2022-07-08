@@ -8,6 +8,7 @@
           <p>
             <span>请</span>
 <!--            声明式导航-->
+
             <router-link to="/login">登录</router-link>
             <router-link  class="register" to="/register">免费注册</router-link>
           </p>

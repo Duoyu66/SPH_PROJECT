@@ -12,6 +12,7 @@
     "core-js": "^3.8.3",
     "element-ui": "^2.15.9",
     "mockjs": "^1.1.0",
+    "node-uuid": "^1.4.8",
     "nprogress": "^0.2.0",
     "swiper": "^5.4.5",
     "vue": "^2.6.14",
@@ -26,6 +27,7 @@
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "lodash": "^4.17.21",
+    "uuid": "^8.3.2",
     "vue-template-compiler": "^2.6.14"
   },
   "eslintConfig": {

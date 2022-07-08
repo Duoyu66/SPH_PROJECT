@@ -3,7 +3,7 @@ module.exports = ({
   // transpileDependencies: true,
   lintOnSave:false,
   devServer:{
-    port:8081,
+
     proxy:{
       '/api':{
          target:'http://gmall-h5-api.atguigu.cn',

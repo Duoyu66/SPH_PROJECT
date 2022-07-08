@@ -32,11 +32,11 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li :class="{active:isOne}" >
-                  <a href="#">综合<span v-show="isDesc" :class="{'el-icon-top':isDesc,'el-icon-bottom':isAcs}" @click="changeOrder"> </span></a>
+                <li :class="{active:isOne}" @click="changeOrder('1')" >
+                  <a >综合<span v-show="isDesc" :class="{'el-icon-top':isDesc,'el-icon-bottom':isAcs}" > </span></a>
                 </li>
-                <li :class="isTwo">
-                  <a href="#">价格<span v-show="isAcs" class="el-icon-bottom"> </span></a>
+                <li :class="isTwo" @click="changeOrder('2')">
+                  <a >价格<span v-show="isAcs" :class="{'el-icon-top':isDesc,'el-icon-bottom':isAcs}" > </span></a>
                 </li>
                 <li> <i class="el-icon-upload"></i></li>
 
@@ -48,7 +48,12 @@
               <li class="yui3-u-1-5" v-for="(good,index) in goodsList" :key="good.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank"><img :src="good.defaultImg"/></a>
+
+              <router-link :to="`/detail/${good.id}`">
+                <img :src="good.defaultImg" alt=""/>
+<!--               <img src="./images/like_01.png" alt="">&ndash;&gt;-->
+              </router-link>
+
                   </div>
                   <div class="price">
                     <strong>
@@ -72,35 +77,9 @@
 
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+<!--          分页器-->
+          <Pagination :pageNo="searchParams.pageNo" :pageSize="searchParams.pageSize" :total="total" :continues="5" @getPageNo="getPageNo"/>
+
         </div>
       </div>
     </div>
@@ -109,7 +88,7 @@
 
 <script>
 import SearchSelector from './SearchSelector/SearchSelector'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapState} from 'vuex'
 
 export default {
   name: 'SearchIndex',
@@ -123,7 +102,7 @@ export default {
         keyword: "",
         order: "1:desc",
         pageNo: 1,
-        pageSize: 300,
+        pageSize: 5,
         props: [],
         trademark: ""
       }
@@ -158,6 +137,10 @@ export default {
       return this.searchParams.order.indexOf('desc')!==-1
 
     }
+    ,
+    ...mapState({
+      total:state=>state.search.searchList.total
+    })
 
   },
   methods: {
@@ -215,10 +198,32 @@ export default {
       this.getData()
     },
     //排序的操作
-    changeOrder(){
-      let bool=this.isAcs
-      this.isDesc=!bool
-      alert(1233)
+    changeOrder(flag){
+      let newSearchOrder = this.searchParams.order
+      //这里获取到的是最开始的状态
+      let originFlag=this.searchParams.order.split(":")[0]
+      let originSort =this.searchParams.order.split(":")[1]
+    //  准备一个新的order属性值
+      let newOrder ='';;
+    //  点击的是综合
+      if(flag==originFlag){
+        newOrder=`${originFlag}:${originSort}=="desc"?:"asc":"desc"`
+      }else{
+        //点击的是价格
+        newOrder =`${flag}:${'desc'}`
+      }
+      //将新的order赋予searchParams
+      this.searchParams.order=newOrder
+      //再发送请求
+      this.getData()
+    },
+    //自定义事件的回调函数
+    getPageNo(pageNo){
+      //整理带给服务器参数
+      this.searchParams.pageNo=pageNo
+      //再次发请求
+      this.getData()
+      // console.log(pageNo)
     }
   },
   //数据监听：监听组件实例身上的属性值变化
