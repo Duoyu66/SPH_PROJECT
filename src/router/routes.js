@@ -2,8 +2,8 @@
 import Detail from "@/pages/Detail";
 import Home from "@/pages/Home/HomeIndex";
 import Search from "@/pages/Search/SearchIndex";
-import Login from "@/pages/Login/LoginIndex";
-import Register from "@/pages/Register/RegisterIndex";
+import Login from "@/pages/Login/index"
+import Register from "@/pages/Register/index"
 import AddCartSuccess from "@/pages/AddCartSuccess/index"
 import ShopCart from "@/pages/ShopCart/index"
 export default [

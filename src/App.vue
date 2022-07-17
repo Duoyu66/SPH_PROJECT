@@ -12,9 +12,6 @@
 import Header from "@/components/Header/HeaderIndex";
 import Footer from "@/components/Footer/FooterIndex";
 
-import {reqGoodsInfo} from "@/api";
-
-console.log(reqGoodsInfo())
 
 export default {
   name: 'App',

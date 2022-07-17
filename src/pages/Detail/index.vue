@@ -371,7 +371,6 @@ export default {
     Zoom
   },
   mounted() {
-    console.log(this.$route.params)
     this.$store.dispatch('getGoodInfo', this.$route.params.skuId)
   },
   computed: {

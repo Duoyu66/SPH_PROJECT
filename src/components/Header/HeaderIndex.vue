@@ -5,13 +5,20 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+<!--          没有用户名，直接登录-->
+          <p v-if="!userName">
             <span>请</span>
 <!--            声明式导航-->
-
             <router-link to="/login">登录</router-link>
             <router-link  class="register" to="/register">免费注册</router-link>
           </p>
+<!--          登录了-->
+          <p v-else>
+
+            <a> {{userName}}</a>
+            <a class="register"></a>
+          </p>
+
         </div>
         <div class="typeList">
           <a href="###">我的订单</a>
@@ -77,11 +84,27 @@ export default {
       //第三种对象写法
       // this.$router.push({name:"search",params:{keyword:this.keyword},query:{k:this.keyword.toUpperCase()}})
     // }
+    //退出登录
+    async logout(){
+      try{
+        await this.$store.dispatch("userLogout")
+        //回到首页
+        this.$router.push("/home")
+      }catch (e) {
+        console.log(e.message)
+      }
+    }
   },
   mounted() {
     this.$bus.$on("clear",()=>{
       this.keyword=''
     })
+  },
+  computed:{
+    //用户名信息
+    userName() {
+      return this.$store.state.user.userInfo.name;
+    }
   }
 }
 </script>

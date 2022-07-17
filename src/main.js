@@ -3,9 +3,7 @@ import App from './App.vue'
 //引入路由
 import router from "@/router";
 
-import {reqGetSearchInfo} from "@/api";
 
-console.log(reqGetSearchInfo({}))
 //引入分页器组件
 import Pagination from './components/Pagination/Pagination'
 

@@ -25,6 +25,10 @@ service.interceptors.request.use((config)=>{
         //给请求头添加一个字段(userTrmpId)
         config.headers.userTempId=store.state.detail.uuid_token
     }
+    //需要携带token带给服务器
+    if(store.state.user.token){
+        config.headers.token=store.state.user.token
+    }
     NProgress.start();
     return config;
 });
@@ -39,11 +43,5 @@ service.interceptors.response.use((res)=>{
     // 统一处理一下错误
     // alert(error.message)
 });
-
-
-
-
-
-
 //对外暴露
 export default service;

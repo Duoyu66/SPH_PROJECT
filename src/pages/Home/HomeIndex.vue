@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--  三级联动!!-->
-   <TypeIndex/>
+    <TypeIndex/>
     <listIndex/>
     <recomIndex/>
     <RankIndex/>
@@ -29,11 +29,14 @@ export default {
   mounted() {
     //参数是action
     this.$store.dispatch('getFloorList')
+    //用户信息在首页展示
+    this.$store.dispatch('getUserInfo')
   },
-  computed:{
+  computed: {
     ...mapState({
-      floorList:state=>state.home.floorList
-    })
+      floorList: state => state.home.floorList
+    }),
+
   }
 }
 </script>
